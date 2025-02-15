@@ -1,2 +1,2 @@
 # IntervalPhoto
-Take interval photo with iOS device
+Take video every 5 seconds and save to camera roll
