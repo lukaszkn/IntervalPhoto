@@ -8,6 +8,7 @@
 
 import UIKit
 import AVKit
+import AVFoundation
 
 class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
 
@@ -28,10 +29,6 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         
         DispatchQueue.global(qos: .background).async {
             self.captureSession?.startRunning()
-        }
-        
-        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
-            self.takePhoto()
         }
     }
     
@@ -55,6 +52,8 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             
             infoLabel.text = "\(photoIndex)"
             photoIndex += 1
+            
+            // AudioServicesPlayAlertSound(SystemSoundID(1322)) // https://github.com/TUNER88/iOSSystemSoundsLibrary
       } else {
           print("AVCapturePhotoCaptureDelegate Error")
       }
@@ -66,7 +65,7 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         session.beginConfiguration()
         session.sessionPreset = .photo
         
-        guard let device = AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back), let input = try? AVCaptureDeviceInput(device: device) else {
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), let input = try? AVCaptureDeviceInput(device: device) else {
             print("Couldn't create video input")
             return
         }
@@ -87,6 +86,18 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
             captureSession = session
         } else {
             print("Couldn't add camera output")
+        }
+    }
+    
+    @IBAction func takeOnePhoto(_ sender: Any) {
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { timer in
+            self.takePhoto()
+        }
+    }
+    
+    @IBAction func startIntervalPhotos(_ sender: Any) {
+        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
+            self.takePhoto()
         }
     }
 }
