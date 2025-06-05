@@ -1,5 +1,5 @@
 {
-  "originHash" : "313815affb2a3fba3ad4dbe6239640c4489da6295c9a952c5c33cc5f252dcbba",
+  "originHash" : "b36b0a4c70ae4b1ef382a7c7f89445df832a3f07afbaf53f5faf142e97ab853f",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -13,10 +13,10 @@
     {
       "identity" : "chatgptswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/alfianlosari/ChatGPTSwift.git",
+      "location" : "https://github.com/lukaszkn/ChatGPTSwift",
       "state" : {
-        "revision" : "36c3d41cf88d66088733749ca014aedc72a605f3",
-        "version" : "2.4.4"
+        "branch" : "main",
+        "revision" : "36c3d41cf88d66088733749ca014aedc72a605f3"
       }
     },
     {

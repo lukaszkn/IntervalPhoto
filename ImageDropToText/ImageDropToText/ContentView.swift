@@ -7,6 +7,7 @@
 // https://platform.openai.com/docs/models
 // https://platform.openai.com/docs/pricing
 // https://platform.openai.com/settings/organization/usage
+// https://lmarena.ai/leaderboard
 
 
 import SwiftUI
@@ -16,6 +17,7 @@ import ChatGPTSwift
 struct ContentView: View {
     @State private var droppedImage: NSImage?
     @State private var text: String = "Image will be converted to text here..."
+    @State private var textGPTOutput: String = "ChatGPT output goes here..."
     
     private var openApi: ChatGPTAPI!
     
@@ -40,16 +42,25 @@ struct ContentView: View {
             Spacer()
             TextEditor(text: $text)
             Spacer()
-            Button("Test ChatGPT message") {
+            Button("Prompt ChatGPT") {
                 Task {
                     do {
-                        let response = try await openApi.sendMessage(text: "What is ChatGPT?")
+                        let response = try await openApi.sendMessage(text: text)
+                        
                         print(response)
+                        DispatchQueue.main.async {
+                            textGPTOutput = response
+                        }
                     } catch {
                         print(error.localizedDescription)
+                        DispatchQueue.main.async {
+                            textGPTOutput = error.localizedDescription
+                        }
                     }
                 }
             }
+            Spacer()
+            TextEditor(text: $textGPTOutput)
         }
         .onDrop(of: [.fileURL, .png], isTargeted: nil) { providers in
             handleDrop(providers: providers)

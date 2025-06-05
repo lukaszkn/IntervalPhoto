@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B26975FF2DF1B6BE006CC8CC /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */; };
-		B26976042DF1BCE4006CC8CC /* ChatGPTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B26976032DF1BCE4006CC8CC /* ChatGPTSwift */; };
+		B26976072DF1C249006CC8CC /* ChatGPTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B26976062DF1C249006CC8CC /* ChatGPTSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B26976042DF1BCE4006CC8CC /* ChatGPTSwift in Frameworks */,
+				B26976072DF1C249006CC8CC /* ChatGPTSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +86,7 @@
 			);
 			name = ImageDropToText;
 			packageProductDependencies = (
-				B26976032DF1BCE4006CC8CC /* ChatGPTSwift */,
+				B26976062DF1C249006CC8CC /* ChatGPTSwift */,
 			);
 			productName = ImageDropToText;
 			productReference = B246D32B2DB88663009D8ECC /* ImageDropToText.app */;
@@ -117,7 +117,7 @@
 			mainGroup = B246D3222DB88663009D8ECC;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */,
+				B26976052DF1C249006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B246D32C2DB88663009D8ECC /* Products */;
@@ -353,20 +353,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */ = {
+		B26976052DF1C249006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/alfianlosari/ChatGPTSwift.git";
+			repositoryURL = "https://github.com/lukaszkn/ChatGPTSwift";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.4.4;
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B26976032DF1BCE4006CC8CC /* ChatGPTSwift */ = {
+		B26976062DF1C249006CC8CC /* ChatGPTSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */;
+			package = B26976052DF1C249006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */;
 			productName = ChatGPTSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
