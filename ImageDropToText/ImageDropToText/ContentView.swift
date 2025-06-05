@@ -4,13 +4,25 @@
 //
 //  Created by Lukasz on 23/04/2025.
 //
+// https://platform.openai.com/docs/models
+// https://platform.openai.com/docs/pricing
+// https://platform.openai.com/settings/organization/usage
+
 
 import SwiftUI
 import Vision
+import ChatGPTSwift
 
 struct ContentView: View {
     @State private var droppedImage: NSImage?
     @State private var text: String = "Image will be converted to text here..."
+    
+    private var openApi: ChatGPTAPI!
+    
+    init() {
+        let apiKey = Bundle.main.infoDictionary?["OPENAI_API_KEY"] as? String ?? ""
+        openApi = ChatGPTAPI(apiKey: apiKey)
+    }
     
     var body: some View {
         VStack {
@@ -27,6 +39,17 @@ struct ContentView: View {
             }
             Spacer()
             TextEditor(text: $text)
+            Spacer()
+            Button("Test ChatGPT message") {
+                Task {
+                    do {
+                        let response = try await openApi.sendMessage(text: "What is ChatGPT?")
+                        print(response)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
         }
         .onDrop(of: [.fileURL, .png], isTargeted: nil) { providers in
             handleDrop(providers: providers)

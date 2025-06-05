@@ -6,13 +6,32 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B26975FF2DF1B6BE006CC8CC /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */; };
+		B26976042DF1BCE4006CC8CC /* ChatGPTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B26976032DF1BCE4006CC8CC /* ChatGPTSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B246D32B2DB88663009D8ECC /* ImageDropToText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageDropToText.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B26976012DF1BB0C006CC8CC /* Exceptions for "ImageDropToText" folder in "ImageDropToText" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B246D32A2DB88663009D8ECC /* ImageDropToText */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B246D32D2DB88663009D8ECC /* ImageDropToText */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B26976012DF1BB0C006CC8CC /* Exceptions for "ImageDropToText" folder in "ImageDropToText" target */,
+			);
 			path = ImageDropToText;
 			sourceTree = "<group>";
 		};
@@ -23,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B26976042DF1BCE4006CC8CC /* ChatGPTSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,6 +52,7 @@
 		B246D3222DB88663009D8ECC = {
 			isa = PBXGroup;
 			children = (
+				B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */,
 				B246D32D2DB88663009D8ECC /* ImageDropToText */,
 				B246D32C2DB88663009D8ECC /* Products */,
 			);
@@ -65,6 +86,7 @@
 			);
 			name = ImageDropToText;
 			packageProductDependencies = (
+				B26976032DF1BCE4006CC8CC /* ChatGPTSwift */,
 			);
 			productName = ImageDropToText;
 			productReference = B246D32B2DB88663009D8ECC /* ImageDropToText.app */;
@@ -94,6 +116,9 @@
 			);
 			mainGroup = B246D3222DB88663009D8ECC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B246D32C2DB88663009D8ECC /* Products */;
 			projectDirPath = "";
@@ -109,6 +134,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B26975FF2DF1B6BE006CC8CC /* Config.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -127,6 +153,7 @@
 /* Begin XCBuildConfiguration section */
 		B246D3382DB88665009D8ECC /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -190,6 +217,7 @@
 		};
 		B246D3392DB88665009D8ECC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B26975FE2DF1B6BE006CC8CC /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -257,6 +285,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ImageDropToText/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -284,6 +314,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ImageDropToText/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -319,6 +351,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/alfianlosari/ChatGPTSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B26976032DF1BCE4006CC8CC /* ChatGPTSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B26976022DF1BCE4006CC8CC /* XCRemoteSwiftPackageReference "ChatGPTSwift" */;
+			productName = ChatGPTSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B246D3232DB88663009D8ECC /* Project object */;
 }

@@ -1,0 +1,11 @@
+//
+//  Config.xcconfig
+//  ImageDropToText
+//
+//  Created by Lukasz on 05/06/2025.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+OPENAI_API_KEY = YOUR_API_KEY_HERE
