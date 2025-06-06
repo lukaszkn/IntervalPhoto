@@ -40,11 +40,23 @@ struct ContentView: View {
     var body: some View {
         VStack {
             if let image = droppedImage {
-                Image(nsImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 100)
-                    .border(Color.gray)
+                HStack {
+                    Image(nsImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 150, height: 100)
+                        .border(Color.gray)
+                    
+                    Button(action: {
+                        promptGPT(includeImage: true)
+                    }) {
+                        Text("Prompt ChatGPT with image")
+                            .multilineTextAlignment(.center)
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true) // allows wrapping
+                    }
+                    .disabled(isPerformingAction)
+                }
             } else {
                 Text("Drop an image file here")
                     .frame(width: 150, height: 100)
@@ -71,26 +83,7 @@ struct ContentView: View {
                     }
                 }
                 Button("Prompt ChatGPT") {
-                    isPerformingAction = true
-                    Task {
-                        do {
-                            let response = try await openApi.sendMessage(text: text,
-                                                                         model: ChatGPTModel(rawValue: modelSelection)!,
-                                                                         systemText: systemText)
-                            
-                            print(response)
-                            DispatchQueue.main.async {
-                                textGPTOutput = response
-                                isPerformingAction = false
-                            }
-                        } catch {
-                            print(error.localizedDescription)
-                            DispatchQueue.main.async {
-                                textGPTOutput = error.localizedDescription
-                                isPerformingAction = false
-                            }
-                        }
-                    }
+                    promptGPT(includeImage: false)
                 }
                 .disabled(isPerformingAction)
             }
@@ -99,6 +92,30 @@ struct ContentView: View {
         }
         .onDrop(of: [.fileURL, .png], isTargeted: nil) { providers in
             handleDrop(providers: providers)
+        }
+    }
+    
+    private func promptGPT(includeImage: Bool) {
+        isPerformingAction = true
+        Task {
+            do {
+                let response = try await openApi.sendMessage(text: text,
+                                                             model: ChatGPTModel(rawValue: modelSelection)!,
+                                                             systemText: systemText,
+                                                             imageData: includeImage ? droppedImage?.jpegData() : nil)
+                
+                print(response)
+                DispatchQueue.main.async {
+                    textGPTOutput = response
+                    isPerformingAction = false
+                }
+            } catch {
+                print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    textGPTOutput = error.localizedDescription
+                    isPerformingAction = false
+                }
+            }
         }
     }
     
@@ -170,6 +187,17 @@ struct ContentView: View {
         DispatchQueue.main.async {
             text = textToOutput
         }
+    }
+}
+
+extension NSImage {
+    func jpegData(compressionQuality: CGFloat = 0.8) -> Data? {
+        guard let tiffData = self.tiffRepresentation,
+              let bitmap = NSBitmapImageRep(data: tiffData) else {
+            return nil
+        }
+
+        return bitmap.representation(using: .jpeg, properties: [.compressionFactor: compressionQuality])
     }
 }
 
