@@ -25,16 +25,18 @@ struct ContentView: View {
                                                ChatGPTModel.gpt_hyphen_4_period_1_hyphen_mini.rawValue,
                                                ChatGPTModel.gpt_hyphen_4_period_1_hyphen_nano.rawValue,
                                                ChatGPTModel.o3.rawValue,
-                                               ChatGPTModel.o4_hyphen_mini.rawValue
+                                               ChatGPTModel.o4_hyphen_mini.rawValue,
+                                               "gemini-2.5-pro-preview-06-05"
                                               ]
     @State private var modelSelection = modelsSelectorValues[1]
     @State private var isPerformingAction = false
     
     private var openApi: ChatGPTAPI!
+    private var geminiClient: GeminiAPIClient!
     
     init() {
-        let apiKey = Bundle.main.infoDictionary?["OPENAI_API_KEY"] as? String ?? ""
-        openApi = ChatGPTAPI(apiKey: apiKey)
+        openApi = ChatGPTAPI(apiKey: APIKeyManager.getOpenAIAPIKey())
+        geminiClient = GeminiAPIClient(apiKey: APIKeyManager.getGeminiAPIKey())
     }
     
     var body: some View {
@@ -98,24 +100,37 @@ struct ContentView: View {
     private func promptGPT(includeImage: Bool) {
         isPerformingAction = true
         Task {
-            do {
-                let response = try await openApi.sendMessage(text: text,
-                                                             model: ChatGPTModel(rawValue: modelSelection)!,
-                                                             systemText: systemText,
-                                                             imageData: includeImage ? droppedImage?.jpegData() : nil)
-                
-                print(response)
-                DispatchQueue.main.async {
-                    textGPTOutput = response
-                    isPerformingAction = false
+            if modelSelection.contains("gemini") {
+                do {
+                    endPrompt(message: try await geminiClient.generateContent(prompt: text))
+                } catch {
+                    // Handle errors from the API client
+                    if let geminiError = error as? GeminiAPIClient.GeminiError {
+                        endPrompt(message: "Error: \(geminiError.localizedDescription)")
+                    } else {
+                        endPrompt(message: "An unknown error occurred: \(error.localizedDescription)")
+                    }
                 }
-            } catch {
-                print(error.localizedDescription)
-                DispatchQueue.main.async {
-                    textGPTOutput = error.localizedDescription
-                    isPerformingAction = false
+            } else {
+                do {
+                    let response = try await openApi.sendMessage(text: text,
+                                                                 model: ChatGPTModel(rawValue: modelSelection)!,
+                                                                 systemText: systemText,
+                                                                 imageData: includeImage ? droppedImage?.jpegData() : nil)
+                    
+                    endPrompt(message: response)
+                } catch {
+                    endPrompt(message: error.localizedDescription)
                 }
             }
+        }
+    }
+    
+    private func endPrompt(message: String) {
+        print(message)
+        DispatchQueue.main.async {
+            textGPTOutput = message
+            isPerformingAction = false
         }
     }
     
