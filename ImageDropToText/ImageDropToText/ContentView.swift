@@ -8,6 +8,7 @@
 // https://platform.openai.com/docs/pricing
 // https://platform.openai.com/settings/organization/usage
 // https://lmarena.ai/leaderboard
+// https://platform.openai.com/docs/libraries/swift?language=python#swift
 
 
 import SwiftUI
@@ -18,6 +19,16 @@ struct ContentView: View {
     @State private var droppedImage: NSImage?
     @State private var text: String = "Image will be converted to text here..."
     @State private var textGPTOutput: String = "ChatGPT output goes here..."
+    @State private var systemText: String = "You're data engineer"
+    
+    static private let modelsSelectorValues = [ChatGPTModel.gpt_hyphen_4_period_1.rawValue,
+                                               ChatGPTModel.gpt_hyphen_4_period_1_hyphen_mini.rawValue,
+                                               ChatGPTModel.gpt_hyphen_4_period_1_hyphen_nano.rawValue,
+                                               ChatGPTModel.o3.rawValue,
+                                               ChatGPTModel.o4_hyphen_mini.rawValue
+                                              ]
+    @State private var modelSelection = modelsSelectorValues[1]
+    @State private var isPerformingAction = false
     
     private var openApi: ChatGPTAPI!
     
@@ -40,24 +51,48 @@ struct ContentView: View {
                     .border(Color.gray)
             }
             Spacer()
+            Button("Clear") {
+                text = ""
+            }
             TextEditor(text: $text)
+                .font(.caption.monospaced())
             Spacer()
-            Button("Prompt ChatGPT") {
-                Task {
-                    do {
-                        let response = try await openApi.sendMessage(text: text)
-                        
-                        print(response)
-                        DispatchQueue.main.async {
-                            textGPTOutput = response
-                        }
-                    } catch {
-                        print(error.localizedDescription)
-                        DispatchQueue.main.async {
-                            textGPTOutput = error.localizedDescription
+            
+            HStack {
+                Text("System text:")
+                Spacer()
+                TextField("", text: $systemText)
+            }
+            
+            HStack {
+                Picker("Model", selection: $modelSelection) {
+                    ForEach(ContentView.modelsSelectorValues, id: \.self) {
+                        Text($0)
+                    }
+                }
+                Button("Prompt ChatGPT") {
+                    isPerformingAction = true
+                    Task {
+                        do {
+                            let response = try await openApi.sendMessage(text: text,
+                                                                         model: ChatGPTModel(rawValue: modelSelection)!,
+                                                                         systemText: systemText)
+                            
+                            print(response)
+                            DispatchQueue.main.async {
+                                textGPTOutput = response
+                                isPerformingAction = false
+                            }
+                        } catch {
+                            print(error.localizedDescription)
+                            DispatchQueue.main.async {
+                                textGPTOutput = error.localizedDescription
+                                isPerformingAction = false
+                            }
                         }
                     }
                 }
+                .disabled(isPerformingAction)
             }
             Spacer()
             TextEditor(text: $textGPTOutput)
