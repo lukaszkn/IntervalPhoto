@@ -102,7 +102,7 @@ struct ContentView: View {
         Task {
             if modelSelection.contains("gemini") {
                 do {
-                    endPrompt(message: try await geminiClient.generateContent(prompt: text))
+                    endPrompt(message: try await geminiClient.generateContent(prompt: text, systemInstruction: systemText))
                 } catch {
                     // Handle errors from the API client
                     if let geminiError = error as? GeminiAPIClient.GeminiError {
