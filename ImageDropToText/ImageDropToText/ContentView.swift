@@ -65,8 +65,14 @@ struct ContentView: View {
                     .border(Color.gray)
             }
             Spacer()
-            Button("Clear") {
-                text = ""
+            HStack {
+                Button("Clear") {
+                    text = ""
+                }
+                Spacer()
+                Button("Clear prompt history") {
+                    openApi.deleteHistoryList()
+                }
             }
             TextEditor(text: $text)
                 .font(.caption.monospaced())
