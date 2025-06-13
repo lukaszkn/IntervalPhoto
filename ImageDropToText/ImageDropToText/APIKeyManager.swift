@@ -15,4 +15,8 @@ enum APIKeyManager {
     static func getOpenAIAPIKey() -> String {
         return Bundle.main.infoDictionary?["OPENAI_API_KEY"] as? String ?? ""
     }
+    
+    static func getAnthropicAPIKey() -> String {
+        return Bundle.main.infoDictionary?["ANTHROPIC_API_KEY"] as? String ?? ""
+    }
 }

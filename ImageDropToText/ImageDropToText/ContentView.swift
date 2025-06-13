@@ -26,7 +26,9 @@ struct ContentView: View {
                                                ChatGPTModel.gpt_hyphen_4_period_1_hyphen_nano.rawValue,
                                                ChatGPTModel.o3.rawValue,
                                                ChatGPTModel.o4_hyphen_mini.rawValue,
-                                               "gemini-2.5-pro-preview-06-05"
+                                               "gemini-2.5-pro-preview-06-05",
+                                               "claude-opus-4-0",
+                                               "claude-sonnet-4-0"
                                               ]
     @State private var modelSelection = modelsSelectorValues[1]
     @State private var isPerformingAction = false
@@ -34,9 +36,13 @@ struct ContentView: View {
     private var openApi: ChatGPTAPI!
     private var geminiClient: GeminiAPIClient!
     
+    private let anthropicClient: AnthropicAPIClient!
+    @State private var anthropicConversationHistory: [AnthropicConversationTurn] = []
+    
     init() {
         openApi = ChatGPTAPI(apiKey: APIKeyManager.getOpenAIAPIKey())
         geminiClient = GeminiAPIClient(apiKey: APIKeyManager.getGeminiAPIKey())
+        anthropicClient = AnthropicAPIClient(apiKey: APIKeyManager.getAnthropicAPIKey())
     }
     
     var body: some View {
@@ -72,6 +78,7 @@ struct ContentView: View {
                 Spacer()
                 Button("Clear prompt history") {
                     openApi.deleteHistoryList()
+                    anthropicConversationHistory.removeAll()
                 }
             }
             TextEditor(text: $text)
@@ -106,7 +113,23 @@ struct ContentView: View {
     private func promptGPT(includeImage: Bool) {
         isPerformingAction = true
         Task {
-            if modelSelection.contains("gemini") {
+            if modelSelection.contains("claude") {
+                anthropicConversationHistory.append(AnthropicConversationTurn(role: .user, content: text))
+                
+                do {
+                    let result = try await anthropicClient.createMessage(
+                        modelId: modelSelection,
+                        history: anthropicConversationHistory,
+                        systemPrompt: systemText
+                    )
+                    let assistantTurn = AnthropicConversationTurn(role: .assistant, content: result)
+                    anthropicConversationHistory.append(assistantTurn)
+                    endPrompt(message: result)
+                } catch {
+                    endPrompt(message: error.localizedDescription)
+                    _ = anthropicConversationHistory.popLast()
+                }
+            } else if modelSelection.contains("gemini") {
                 do {
                     endPrompt(message: try await geminiClient.generateContent(prompt: text, systemInstruction: systemText))
                 } catch {
