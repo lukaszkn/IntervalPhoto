@@ -48,7 +48,7 @@ public final class GeminiAPIClient {
     
     // MARK: - Initializer
     
-    public init(apiKey: String, modelName: String = "gemini-2.5-pro-preview-06-05") {
+    public init(apiKey: String, modelName: String = "gemini-2.5-pro") {
         self.apiKey = apiKey
         self.modelName = modelName
         

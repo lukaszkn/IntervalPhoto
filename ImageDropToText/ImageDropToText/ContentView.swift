@@ -14,11 +14,13 @@
 import SwiftUI
 import Vision
 import ChatGPTSwift
+import ScreenCaptureKit
+import AppKit
 
 struct ContentView: View {
     @State private var droppedImage: NSImage?
     @State private var text: String = "Image will be converted to text here..."
-    @State private var textGPTOutput: String = "ChatGPT output goes here..."
+    @State private var textGPTOutput: String = "LLM output goes here..."
     @State private var systemText: String = "You're data engineer"
     
     static private let modelsSelectorValues = [ChatGPTModel.gpt_hyphen_4_period_1.rawValue,
@@ -26,7 +28,7 @@ struct ContentView: View {
                                                ChatGPTModel.gpt_hyphen_4_period_1_hyphen_nano.rawValue,
                                                ChatGPTModel.o3.rawValue,
                                                ChatGPTModel.o4_hyphen_mini.rawValue,
-                                               "gemini-2.5-pro-preview-06-05",
+                                               "gemini-2.5-pro",
                                                "claude-opus-4-0",
                                                "claude-sonnet-4-0"
                                               ]
@@ -230,6 +232,52 @@ struct ContentView: View {
         print(text)
         DispatchQueue.main.async {
             text = textToOutput
+        }
+    }
+    
+    func captureFullScreenImage(completion: @escaping (NSImage?) -> Void) {
+        SCShareableContent.getExcludingDesktopWindows(false, onScreenWindowsOnly: true) { content, error in
+            if let error = error {
+                print("Failed to get shareable content: \(error)")
+                completion(nil)
+                return
+            }
+
+            guard let display = content?.displays.first else {
+                print("No display found")
+                completion(nil)
+                return
+            }
+
+            let config = SCStreamConfiguration()
+            config.width = display.width
+            config.height = display.height
+            config.showsCursor = false
+
+            let filter = SCContentFilter(display: display, excludingWindows: [])
+            let stream = SCStream(filter: filter, configuration: config, delegate: nil)
+            let output = SingleFrameOutput { image in
+                // Stop the stream once we have the frame
+                Task {
+                    try? await stream.stopCapture()
+                }
+                completion(image)
+            }
+
+            do {
+                try stream.addStreamOutput(output, type: .screen, sampleHandlerQueue: DispatchQueue.main)
+            } catch {
+                print("Failed to add stream output: \(error)")
+                completion(nil)
+                return
+            }
+
+            stream.startCapture { error in
+                if let error = error {
+                    print("Failed to start capture: \(error)")
+                    completion(nil)
+                }
+            }
         }
     }
 }
