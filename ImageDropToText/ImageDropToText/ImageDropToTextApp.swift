@@ -15,7 +15,9 @@ struct ImageDropToTextApp: App {
         WindowGroup {
             ContentView()
                 .onAppear {
-                    appDelegate.makeWindowAlwaysOnTop()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        appDelegate.makeWindowAlwaysOnTop()
+                    }
                 }
         }
     }
@@ -38,9 +40,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.collectionBehavior = .canJoinAllSpaces
             window.sharingType = .none
             
-//            window.isOpaque = false
-//            window.alphaValue = 0.65  // 1.0 is fully opaque
-//            window.backgroundColor = NSColor.white
+            window.isOpaque = false
+            window.alphaValue = 0.77  // 1.0 is fully opaque
+            window.backgroundColor = NSColor.white
         }
     }
 }

@@ -23,13 +23,11 @@ struct ContentView: View {
     @State private var textGPTOutput: String = "LLM output goes here..."
     @State private var systemText: String = "You're data engineer"
     
-    static private let modelsSelectorValues = [ChatGPTModel.gpt_hyphen_4_period_1.rawValue,
-                                               ChatGPTModel.gpt_hyphen_4_period_1_hyphen_mini.rawValue,
-                                               ChatGPTModel.gpt_hyphen_4_period_1_hyphen_nano.rawValue,
-                                               ChatGPTModel.o3.rawValue,
-                                               ChatGPTModel.o4_hyphen_mini.rawValue,
+    static private let modelsSelectorValues = [ChatGPTModel.gpt_hyphen_5.rawValue,
+                                               ChatGPTModel.gpt_hyphen_5_hyphen_mini.rawValue,
+                                               ChatGPTModel.gpt_hyphen_5_hyphen_nano.rawValue,
                                                "gemini-2.5-pro",
-                                               "claude-opus-4-0",
+                                               "claude-opus-4-1",
                                                "claude-sonnet-4-0"
                                               ]
     @State private var modelSelection = modelsSelectorValues[1]
