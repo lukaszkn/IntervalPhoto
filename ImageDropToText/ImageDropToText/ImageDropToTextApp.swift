@@ -25,6 +25,12 @@ struct ImageDropToTextApp: App {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow?
+    static private(set) weak var shared: AppDelegate?
+    
+    override init() {
+        super.init()
+        AppDelegate.shared = self
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         if let window = NSApplication.shared.windows.first {
@@ -32,7 +38,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func makeWindowAlwaysOnTop() {
+    func makeWindowAlwaysOnTop(isTransparent: Bool = false) {
         DispatchQueue.main.async {
             guard let window = self.window else { return }
             
@@ -40,9 +46,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             window.collectionBehavior = .canJoinAllSpaces
             window.sharingType = .none
             
-            window.isOpaque = false
-            window.alphaValue = 0.77  // 1.0 is fully opaque
-            window.backgroundColor = NSColor.white
+            if isTransparent {
+                window.isOpaque = false
+                window.alphaValue = 0.7  // 1.0 is fully opaque
+                window.backgroundColor = NSColor.white
+            } else {
+                window.isOpaque = true
+                window.alphaValue = 1
+                window.backgroundColor = NSColor.white
+            }
         }
     }
 }

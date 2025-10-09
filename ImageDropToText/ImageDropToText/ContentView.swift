@@ -38,6 +38,7 @@ struct ContentView: View {
     
     private let anthropicClient: AnthropicAPIClient!
     @State private var anthropicConversationHistory: [AnthropicConversationTurn] = []
+    @State private var isTransparent = false
     
     init() {
         openApi = ChatGPTAPI(apiKey: APIKeyManager.getOpenAIAPIKey())
@@ -76,6 +77,16 @@ struct ContentView: View {
                     text = ""
                 }
                 Spacer()
+                Toggle(isOn: $isTransparent) {
+                    Text("Transparent")
+                }
+                .toggleStyle(.checkbox)
+                .onChange(of: isTransparent, { oldValue, newValue in
+                    print("Transparent \(newValue)")
+                    AppDelegate.shared?.makeWindowAlwaysOnTop(isTransparent: newValue)
+                })
+                Spacer()
+                
                 Button("Clear prompt history") {
                     openApi.deleteHistoryList()
                     anthropicConversationHistory.removeAll()
