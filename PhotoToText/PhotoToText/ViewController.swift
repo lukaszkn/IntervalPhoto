@@ -89,7 +89,7 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
                 }
                 
                 self.label.text = recognizedStrings.joined(separator: "\n")
-                print(self.label.text)
+                print("LABEL TEXT:\n\(self.label.text!.replacingOccurrences(of: "\\n", with: "\n"))")
                 
                 // copy to clipboard
                 UIPasteboard.general.string = self.label.text

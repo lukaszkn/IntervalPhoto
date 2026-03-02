@@ -39,6 +39,7 @@ struct ContentView: View {
     private let anthropicClient: AnthropicAPIClient!
     @State private var anthropicConversationHistory: [AnthropicConversationTurn] = []
     @State private var isTransparent = false
+    @State private var useStream = false
     
     init() {
         openApi = ChatGPTAPI(apiKey: APIKeyManager.getOpenAIAPIKey())
@@ -85,6 +86,11 @@ struct ContentView: View {
                     print("Transparent \(newValue)")
                     AppDelegate.shared?.makeWindowAlwaysOnTop(isTransparent: newValue)
                 })
+                Spacer()
+                Toggle(isOn: $useStream) {
+                    Text("Stream")
+                }
+                .toggleStyle(.checkbox)
                 Spacer()
                 
                 Button("Clear prompt history") {
@@ -152,15 +158,28 @@ struct ContentView: View {
                     }
                 }
             } else {
-                do {
-                    let response = try await openApi.sendMessage(text: text,
-                                                                 model: ChatGPTModel(rawValue: modelSelection)!,
-                                                                 systemText: systemText,
-                                                                 imageData: includeImage ? droppedImage?.jpegData() : nil)
-                    
-                    endPrompt(message: response)
-                } catch {
-                    endPrompt(message: error.localizedDescription)
+                if (useStream) {
+                    do {
+                        let stream = try await openApi.sendMessageStream(text: text,
+                                                                         model: ChatGPTModel(rawValue: modelSelection)!,
+                                                                        systemText: systemText)
+                        for try await line in stream {
+                            print(line)
+                        }
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                } else {
+                    do {
+                        let response = try await openApi.sendMessage(text: text,
+                                                                     model: ChatGPTModel(rawValue: modelSelection)!,
+                                                                     systemText: systemText,
+                                                                     imageData: includeImage ? droppedImage?.jpegData() : nil)
+                        
+                        endPrompt(message: response)
+                    } catch {
+                        endPrompt(message: error.localizedDescription)
+                    }
                 }
             }
         }
