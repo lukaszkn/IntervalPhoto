@@ -11,17 +11,22 @@ import AVKit
 import AVFoundation
 
 class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
-
+    @IBOutlet weak var intervalLabel: UILabel!
     @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var cameraSwith: UISegmentedControl!
+    @IBOutlet weak var stepper: UIStepper!
     
     private var cameraOutput = AVCapturePhotoOutput()
     private var captureSession: AVCaptureSession?
     private var photoIndex = 0
+    private var previewLayer: AVCaptureVideoPreviewLayer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupCaptureSession()
+        stepper.value = 5
+        intervalLabel.text = "\(stepper.value)"
+        setupCaptureSession(deviceType: .builtInWideAngleCamera)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -59,13 +64,13 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
       }
     }
 
-    private func setupCaptureSession() {
+    private func setupCaptureSession(deviceType: AVCaptureDevice.DeviceType) {
         let session = AVCaptureSession()
         
         session.beginConfiguration()
         session.sessionPreset = .photo
         
-        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), let input = try? AVCaptureDeviceInput(device: device) else {
+        guard let device = AVCaptureDevice.default(deviceType, for: .video, position: .back), let input = try? AVCaptureDeviceInput(device: device) else {
             print("Couldn't create video input")
             return
         }
@@ -77,6 +82,7 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
         preview.connection!.videoOrientation = .landscapeRight
         
         view.layer.addSublayer(preview)
+        previewLayer = preview
         
         if session.canAddOutput(cameraOutput) {
             session.addOutput(cameraOutput)
@@ -96,9 +102,31 @@ class ViewController: UIViewController, AVCapturePhotoCaptureDelegate {
     }
     
     @IBAction func startIntervalPhotos(_ sender: Any) {
-        Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { timer in
+        Timer.scheduledTimer(withTimeInterval: stepper.value, repeats: true) { timer in
             self.takePhoto()
         }
+    }
+    
+    @IBAction private func segmentChanged() {
+        print("segmentChanged")
+        captureSession?.stopRunning()
+        captureSession = nil
+        
+        previewLayer?.removeFromSuperlayer()
+        previewLayer = nil
+        
+        if cameraSwith.selectedSegmentIndex == 0 {
+            setupCaptureSession(deviceType: .builtInWideAngleCamera)
+        } else {
+            setupCaptureSession(deviceType: .builtInUltraWideCamera)
+        }
+        
+        DispatchQueue.global(qos: .background).async {
+            self.captureSession?.startRunning()
+        }
+    }
+    
+    @IBAction private func stepperChanged() {
     }
 }
 
